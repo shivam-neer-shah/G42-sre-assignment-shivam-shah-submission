@@ -96,3 +96,6 @@ This endpoint is used to get the population of a specific city.
 
 
 
+## Contact
+
+In case of any questions or feedback, please email [shivam.neer.shah@gmail.com](mailto:shivam.neer.shah@gmail.com)
