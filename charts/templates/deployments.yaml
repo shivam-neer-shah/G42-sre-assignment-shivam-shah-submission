@@ -1,27 +1,65 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: flask-app-deployment
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: flask-app
+#   template:
+#     metadata:
+#       labels:
+#         app: flask-app
+#     spec:
+#       containers:
+#         - name: flask-app
+#           image: python-app-shivam-shah:latest
+#           imagePullPolicy: IfNotPresent
+#           command: ["flask", "run", "--host=0.0.0.0"]
+#           ports:
+#             - containerPort: 5000
+#           env:
+#             - name: ES_URL
+#               valueFrom:
+#                 configMapKeyRef:
+#                   name: env-config
+#                   key: ELASTICSEARCH_URL
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-app-deployment
+  name: {{ include "chart.name" . }}
+  labels:
+  {{- include "chart.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: flask-app
+  {{- include "chart.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: flask-app
+      {{- include "chart.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: flask-app
-          image: python-app-shivam-shah:latest
-          imagePullPolicy: IfNotPresent
-          command: ["flask", "run", "--host=0.0.0.0"]
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 5000
+            - containerPort: {{ default 5000 .Values.service.targetPort }}
+          readinessProbe:
+          {{-  toYaml .Values.readinessProbe | nindent 12 }}
+
+          livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+
+          resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+
           env:
-            - name: ES_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: env-config
-                  key: ELASTICSEARCH_URL
+          - name: ES_URL
+            valueFrom:
+              configMapKeyRef:
+                name: env-config
+                key: ELASTICSEARCH_URL

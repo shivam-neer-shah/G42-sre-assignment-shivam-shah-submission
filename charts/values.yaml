@@ -1,0 +1,40 @@
+image:
+  repository: g42-python-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5000
+  # DEFAULT: Set this to whatever port your application web server listens on
+  targetPort: 5000
+
+# ENVIRONMENT: Number of pods to start in parallel
+replicaCount: 1
+
+# DEFAULT: Configure how much cpu/memory your application requests, and is limited to. Intentionally set low so you are forced to set these values.
+# ENVIRONMENT: Often increased for production environments as load characteristics change.
+resources: 
+  requests:
+    cpu: .1
+    memory: 128Mi
+  limits:
+    cpu: .2
+    memory: 256Mi
+  
+
+# DEFAULT: Update based on the application requirement. Examples at https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+readinessProbe: 
+  httpGet:
+      path: /health
+      port: 5000
+  initialDelaySeconds: 300
+  periodSeconds: 5  
+
+# DEFAULT: Update based on the application requirement. Examples at https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  httpGet:
+      path: /health
+      port: 5000
+  initialDelaySeconds: 300
+  periodSeconds: 5  

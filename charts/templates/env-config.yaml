@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: env-config
 data:
-  ELASTICSEARCH_URL: elasticsearch-master-headless.default.svc.cluster.local:9200
+  ELASTICSEARCH_URL: elasticsearch-master.default.svc.cluster.local:9200
