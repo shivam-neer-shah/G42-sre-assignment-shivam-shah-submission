@@ -28,7 +28,7 @@ readinessProbe:
   httpGet:
       path: /health
       port: 5000
-  initialDelaySeconds: 300
+  initialDelaySeconds: 30
   periodSeconds: 5  
 
 # DEFAULT: Update based on the application requirement. Examples at https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -36,5 +36,9 @@ livenessProbe:
   httpGet:
       path: /health
       port: 5000
-  initialDelaySeconds: 300
+  initialDelaySeconds: 30
   periodSeconds: 5  
+
+configMapName: env-config
+configMapKey: ELASTICSEARCH_URL
+envName: ES_URL
